@@ -1,15 +1,1 @@
-{
-  "name": "crypto-tracker",
-  "version": "1.0.0",
-  "main": "server.js",
-  "scripts": {
-    "start": "node server.js"
-  },
-  "dependencies": {
-    "@supabase/supabase-js": "^2.110.2",
-    "axios": "^1.18.1",
-    "dotenv": "^16.6.1",
-    "express": "^4.22.2",
-    "telegraf": "^4.16.3"
-  }
-}
+
