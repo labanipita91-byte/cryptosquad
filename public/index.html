@@ -9,44 +9,77 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
+    <!-- PAYMENT WALL (Blocks app after 14 days) -->
+    <div id="pay-wall" class="modal-full" style="display:none;">
+        <div class="modal-content">
+            <h1 style="font-size:50px">🛑</h1>
+            <h2>Trial Expired</h2>
+            <p>Your 14-day free trial has ended. Upgrade to Pro to continue tracking your gains and squads.</p>
+            <button class="btn-p" onclick="buyPro()">Upgrade for 299 Stars</button>
+        </div>
+    </div>
+
     <div class="container">
-        <div id="winner-banner" class="winner-announcement" style="display:none;">🏆 Weekly Champ: <span id="winner-name">...</span> 🚀</div>
         <header class="top-nav">
-            <h2 id="user-display">...</h2>
-            <div id="trial-badge" class="badge">Trial</div>
+            <h2 id="user-display">Joseph</h2>
+            <div id="trial-days" class="badge">14d left</div>
         </header>
+
         <main id="app">
+            <!-- DASHBOARD -->
             <section id="view-dashboard">
-                <div class="balance-card"><small>Total Portfolio</small><h1 id="total-val">$0.00</h1><div id="total-change">+0.00%</div></div>
-                <div class="actions"><button class="btn-p" onclick="showView('view-add')">+ Add Coin</button><button class="btn-s" onclick="showView('view-groups')">Squads</button></div>
+                <div class="balance-card">
+                    <small>Total Portfolio</small>
+                    <h1 id="total-val">$0.00</h1>
+                    <div id="total-change" class="up">+0.00% (24h)</div>
+                </div>
+                <div class="actions">
+                    <button class="btn-p" onclick="showView('view-add')">+ Add Coin</button>
+                    <button class="btn-s" onclick="showView('view-groups')">Squads</button>
+                </div>
                 <div id="asset-list"></div>
             </section>
+
+            <!-- ADD ASSET -->
             <section id="view-add" style="display:none;">
                 <button class="btn-back-y" onclick="showView('view-dashboard')">← Back</button>
                 <div class="form-card">
-                    <input type="text" id="coin-id" placeholder="bitcoin, solana..."><input type="number" id="coin-amount" placeholder="0.5">
+                    <input type="text" id="coin-id" placeholder="bitcoin, solana, pepe...">
+                    <input type="number" id="coin-amount" placeholder="Amount">
                     <button class="btn-p" onclick="addAsset()">Save Asset</button>
                 </div>
             </section>
+
+            <!-- SQUAD LIST -->
             <section id="view-groups" style="display:none;">
                 <button class="btn-back-y" onclick="showView('view-dashboard')">← Back</button>
-                <div class="section-title">Squads I Created</div><div id="created-list"></div>
-                <div class="section-title" style="margin-top:15px">Joined Squads</div><div id="joined-list"></div>
+                <div class="section-title">Squads I Created</div>
+                <div id="created-list"></div>
+                <div class="section-title" style="margin-top:20px">Joined Squads</div>
+                <div id="joined-list"></div>
                 <div class="form-card" style="margin-top:20px">
-                    <input type="text" id="new-sq-name" placeholder="Squad Name"><button class="btn-p" onclick="createGroup()">Create Squad</button>
+                    <input type="text" id="new-sq-name" placeholder="Squad Name">
+                    <button class="btn-p" onclick="createGroup()">Create Squad</button>
                     <div style="text-align:center; margin:10px; color:gray">OR</div>
-                    <input type="text" id="join-code" placeholder="Invite Code"><button class="btn-s" style="width:100%" onclick="joinGroup()">Join Squad</button>
+                    <input type="text" id="join-code" placeholder="Invite Code">
+                    <button class="btn-s" style="width:100%" onclick="joinGroup()">Join Squad</button>
                 </div>
             </section>
+
+            <!-- LEADERBOARD -->
             <section id="view-active-squad" style="display:none;">
                 <button class="btn-back-y" onclick="showView('view-groups')">← Back</button>
                 <h2 id="sq-name-display"></h2>
-                <div class="code-box"><span id="sq-code-display"></span><button onclick="copyCode()" class="btn-copy">COPY</button></div>
+                <div class="code-box">
+                    <span>Code: <strong id="sq-code-display" style="color:var(--primary)"></strong></span>
+                    <button onclick="copyCode()" class="btn-copy">COPY</button>
+                </div>
                 <button class="btn-p" onclick="shareSquad()">📢 Invite Friends</button>
-                <div class="section-title">Leaderboard (↑ Growth)</div><div id="leaderboard-list"></div>
+                <div class="section-title">Leaderboard (↑ Growth)</div>
+                <div id="leaderboard-list"></div>
             </section>
         </main>
     </div>
     <script src="app.js"></script>
 </body>
-</html>
+                        </html>
