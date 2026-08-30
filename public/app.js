@@ -1,4 +1,4 @@
-const SB_URL = "https://lqkrjajdbotcbjlvimxk.supabase.co";
+const SB_URL ="https:lqkrjajdbotcbjlvimxk.supabase.co";
 const SB_KEY = "sb_publishable_JJf-0T9XY2lVJq1cs3NLuw_-_K7jhhB";
 const supabaseClient = supabase.createClient(SB_URL, SB_KEY);
 const tg = window.Telegram?.WebApp;
@@ -8,11 +8,7 @@ let MY_NAME = tg?.initDataUnsafe?.user?.first_name || "Guest";
 localStorage.setItem('device_id', MY_ID);
 
 async function init() {
-    const { data: p } = await supabaseClient.from('profiles').upsert([{ user_id: MY_ID, user_name: MY_NAME, chat_id: tg?.initDataUnsafe?.user?.id }]).select().single();
-    const diff = (Date.now() - new Date(p.trial_started_at).getTime()) / (1000*60*60*24);
-    if (diff > 14 && !p.is_pro) document.getElementById('pay-wall').style.display = 'flex';
-    document.getElementById('user-display').innerText = MY_NAME + (p.is_pro ? " 👑" : "");
-    document.getElementById('trial-badge').innerText = p.is_pro ? "PRO" : `${Math.max(0, Math.ceil(14 - diff))}d left`;
+    await supabaseClient.from('profiles').upsert([{ user_id: MY_ID, user_name: MY_NAME, chat_id: tg?.initDataUnsafe?.user?.id }]);
     renderPortfolio();
 }
 
@@ -23,21 +19,18 @@ window.showView = (id) => {
     if(id === 'view-groups') renderSquadLists();
 };
 
+// DELETE COIN FUNCTION
 window.deleteCoin = async (id) => {
-    if (confirm("Delete coin?")) { await supabaseClient.from('assets').delete().eq('id', id); renderPortfolio(); }
-};
-
-window.exitSquad = async (groupId) => {
-    if (confirm("Leave this squad?")) { await supabaseClient.from('group_members').delete().eq('group_id', groupId).eq('user_id', MY_ID); renderSquadLists(); }
-};
-
-window.deleteSquad = async (id) => {
-    if (confirm("Delete this squad forever?")) { await supabaseClient.from('groups').delete().eq('id', id); renderSquadLists(); }
+    if (confirm("Remove this coin?")) {
+        await supabaseClient.from('assets').delete().eq('id', id);
+        renderPortfolio();
+    }
 };
 
 window.addAsset = async () => {
     const cid = document.getElementById('coin-id').value.toLowerCase().trim();
     const amt = parseFloat(document.getElementById('coin-amount').value);
+    if (!cid || isNaN(amt)) return alert("Invalid Data");
     await supabaseClient.from('assets').insert([{ user_id: MY_ID, coin_id: cid, amount: amt }]);
     showView('view-dashboard');
 };
@@ -45,21 +38,37 @@ window.addAsset = async () => {
 async function renderPortfolio() {
     const { data: assets } = await supabaseClient.from('assets').select('*').eq('user_id', MY_ID);
     const list = document.getElementById('asset-list');
-    if (!assets || assets.length === 0) { list.innerHTML = "<p style='text-align:center;color:gray'>Empty</p>"; return; }
+    if (!assets || assets.length === 0) { list.innerHTML = "<p style='color:gray'>Empty</p>"; return; }
+    
     const ids = assets.map(a => a.coin_id).join(',');
     const prices = await (await fetch(`/api/prices?coins=${ids}`)).json();
     let total = 0, weight = 0;
+
     list.innerHTML = assets.map(a => {
         const p = prices[a.coin_id]?.usd || 0, c = prices[a.coin_id]?.usd_24h_change || 0, v = a.amount * p;
         total += v; weight += (c * v);
-        return `<div class="asset-item"><div><strong>${a.coin_id.toUpperCase()}</strong><br><small>${a.amount}</small></div>
-                <div style="text-align:right; display:flex; align-items:center;">
-                <div><strong>$${v.toLocaleString()}</strong><br><small class="${c>=0?'up':'down'}">${c>=0?'↑':'↓'} ${Math.abs(c).toFixed(2)}%</small></div>
-                <button onclick="deleteCoin('${a.id}')" class="btn-del">×</button></div></div>`;
+        return `
+        <div class="asset-item">
+            <div><strong>${a.coin_id.toUpperCase()}</strong><br><small>${a.amount}</small></div>
+            <div style="text-align:right; display:flex; align-items:center;">
+                <div>
+                    <strong>$${v.toLocaleString()}</strong><br>
+                    <small class="${c>=0?'up':'down'}">${c>=0?'↑':'↓'} ${Math.abs(c).toFixed(2)}%</small>
+                </div>
+                <!-- THE DELETE BUTTON -->
+                <button onclick="deleteCoin('${a.id}')" class="btn-del">×</button>
+            </div>
+        </div>`;
     }).join('');
+    
     document.getElementById('total-val').innerText = "$" + total.toLocaleString();
+    const avg = total > 0 ? (weight / total) : 0;
+    const changeEl = document.getElementById('total-change');
+    changeEl.innerText = `${avg>=0?'↑':'↓'} ${Math.abs(avg).toFixed(2)}% (24h)`;
+    changeEl.className = avg >= 0 ? 'up' : 'down';
 }
 
+// Squad Management (Same as before but ensures proper rendering)
 window.createGroup = async () => {
     const name = document.getElementById('new-sq-name').value;
     const code = Math.random().toString(36).substring(2, 7).toUpperCase();
@@ -81,8 +90,9 @@ async function renderSquadLists() {
     const { data: created } = await supabaseClient.from('groups').select('*').eq('owner_id', MY_ID);
     const { data: mRows } = await supabaseClient.from('group_members').select('group_id').eq('user_id', MY_ID);
     let jd = []; if (mRows?.length > 0) jd = (await supabaseClient.from('groups').select('*').in('id', mRows.map(m => m.group_id))).data || [];
-    document.getElementById('created-list').innerHTML = created?.map(s => `<div class="squad-link"><span onclick="loadLeaderboard('${s.id}')">${s.name} ➔</span><button onclick="deleteSquad('${s.id}')" style="background:none;border:none;color:red">×</button></div>`).join('') || "None";
-    document.getElementById('joined-list').innerHTML = jd?.filter(j => j.owner_id !== MY_ID).map(j => `<div class="squad-link"><span onclick="loadLeaderboard('${j.id}')">${j.name} ➔</span><button onclick="exitSquad('${j.id}')" style="background:none;border:none;color:orange;font-size:10px">EXIT</button></div>`).join('') || "None";
+    
+    document.getElementById('created-list').innerHTML = created?.map(s => `<div class="squad-link"><span onclick="loadLeaderboard('${s.id}')">${s.name} ➔</span></div>`).join('') || "None";
+    document.getElementById('joined-list').innerHTML = jd?.filter(j => j.owner_id !== MY_ID).map(j => `<div class="squad-link"><span onclick="loadLeaderboard('${j.id}')">${j.name} ➔</span></div>`).join('') || "None";
 }
 
 async function loadLeaderboard(gid) {
@@ -108,6 +118,5 @@ async function loadLeaderboard(gid) {
 
 window.copyCode = () => { navigator.clipboard.writeText(document.getElementById('sq-code-display').innerText); alert("Copied!"); };
 window.shareSquad = () => tg.openTelegramLink(`https://t.me/share/url?url=https://t.me/CryptoSquadProBot?startapp=${document.getElementById('sq-code-display').innerText}`);
-window.buyPro = async () => { const res = await fetch(`/api/pay-pro?userId=${MY_ID}`); const d = await res.json(); tg.openTelegramLink(d.url); };
 
 document.addEventListener('DOMContentLoaded', init);
