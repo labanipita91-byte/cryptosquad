@@ -1,20 +1,64 @@
-:root { --bg: #0b0e11; --card: #1e2329; --primary: #fcd535; --text: #eaecef; --up: #0ecb81; --down: #f6465d; }
-body { background: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; }
+:root {
+    --bg: #0b0e11; --card: #1e2329; --primary: #fcd535; --text: #eaecef;
+    --up: #0ecb81; --down: #f6465d; --hint: #848e9c;
+}
+body { background: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; padding: 0; }
 .container { padding: 16px; max-width: 500px; margin: auto; padding-bottom: 50px; }
+
+/* Spacing Fix */
+.actions { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 12px; 
+    margin-bottom: 40px; /* Added more space below buttons */
+}
+
 .top-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
 .badge { background: #333; color: var(--primary); padding: 5px 10px; border-radius: 8px; font-size: 11px; }
+
 .balance-card { background: var(--card); padding: 30px; border-radius: 20px; text-align: center; border-bottom: 4px solid var(--primary); margin-bottom: 20px; }
 .balance-card h1 { font-size: 42px; margin: 5px 0; }
-.actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 30px; }
+
 .btn-p { background: var(--primary); color: #000; border: none; padding: 16px; border-radius: 12px; font-weight: bold; width: 100%; cursor: pointer; }
 .btn-s { background: var(--card); color: #fff; border: 1px solid #444; padding: 16px; border-radius: 12px; cursor: pointer; }
-.btn-back-y { background: none; border: none; color: var(--primary); font-size: 18px; margin-bottom: 20px; font-weight: bold; }
-.asset-item { display: flex; justify-content: space-between; padding: 15px; background: var(--card); border-radius: 15px; margin-bottom: 8px; align-items: center; }
-.btn-del { color: var(--down); background: none; border: none; font-size: 20px; margin-left: 10px; cursor: pointer; }
+
+/* Joseph's Yellow Back Button */
+.btn-back-y { background: none; border: none; color: var(--primary); font-size: 18px; margin-bottom: 20px; cursor: pointer; font-weight: bold; }
+
+/* List Spacing & Delete Button */
+.section-title { color: var(--hint); font-size: 12px; text-transform: uppercase; margin-bottom: 15px; font-weight: bold; }
+
+.asset-item { 
+    display: flex; 
+    justify-content: space-between; 
+    padding: 16px; 
+    background: var(--card); 
+    border-radius: 15px; 
+    margin-bottom: 10px; 
+    align-items: center; 
+}
+
+.btn-del { 
+    color: var(--down); 
+    background: rgba(246, 70, 93, 0.1); 
+    border: none; 
+    font-size: 18px; 
+    font-weight: bold;
+    margin-left: 15px; 
+    cursor: pointer; 
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .code-box { background: #000; padding: 12px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border: 1px dashed #444; }
 .btn-copy { background: var(--primary); border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; }
 .squad-link { display: flex; justify-content: space-between; background: var(--card); padding: 15px; border-radius: 12px; color: #fff; margin-bottom: 8px; border-right: 4px solid var(--primary); font-weight: bold; }
+
 .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; display: flex; align-items: center; justify-content: center; }
 .modal-content { background: var(--card); padding: 30px; border-radius: 20px; width: 80%; text-align: center; }
-input { width: 100%; padding: 15px; background: #181a20; border: 1px solid #333; color: #fff; border-radius: 10px; margin-bottom: 10px; box-sizing: border-box; }
+input { width: 100%; padding: 15px; background: #181a20; border: 1px solid #333; color: #fff; border-radius: 10px; margin-bottom: 10px; }
 .up { color: var(--up); } .down { color: var(--down); }
