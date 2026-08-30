@@ -5,22 +5,14 @@ const tg = window.Telegram?.WebApp;
 
 let MY_ID = localStorage.getItem('device_id') || 'u_' + Math.random().toString(36).substring(7);
 let MY_NAME = tg?.initDataUnsafe?.user?.first_name || "Guest";
-let CHAT_ID = tg?.initDataUnsafe?.user?.id;
 localStorage.setItem('device_id', MY_ID);
 
 async function init() {
-    const { data: p } = await supabaseClient.from('profiles').upsert([{ 
-        user_id: MY_ID, user_name: MY_NAME, chat_id: CHAT_ID 
-    }]).select().single();
-
-    // 14 Day Trial Logic
+    const { data: p } = await supabaseClient.from('profiles').upsert([{ user_id: MY_ID, user_name: MY_NAME, chat_id: tg?.initDataUnsafe?.user?.id }]).select().single();
     const diff = (Date.now() - new Date(p.trial_started_at).getTime()) / (1000*60*60*24);
-    if (diff > 14 && !p.is_pro) {
-        document.getElementById('pay-wall').style.display = 'flex';
-    }
-    
+    if (diff > 14 && !p.is_pro) document.getElementById('pay-wall').style.display = 'flex';
     document.getElementById('user-display').innerText = MY_NAME + (p.is_pro ? " 👑" : "");
-    document.getElementById('trial-days').innerText = p.is_pro ? "PRO" : `${Math.max(0, Math.ceil(14 - diff))}d left`;
+    document.getElementById('trial-badge').innerText = p.is_pro ? "PRO" : `${Math.max(0, Math.ceil(14 - diff))}d left`;
     renderPortfolio();
 }
 
@@ -31,20 +23,23 @@ window.showView = (id) => {
     if(id === 'view-groups') renderSquadLists();
 };
 
-// ACTIONS
+window.deleteCoin = async (id) => {
+    if (confirm("Delete coin?")) { await supabaseClient.from('assets').delete().eq('id', id); renderPortfolio(); }
+};
+
+window.exitSquad = async (groupId) => {
+    if (confirm("Leave this squad?")) { await supabaseClient.from('group_members').delete().eq('group_id', groupId).eq('user_id', MY_ID); renderSquadLists(); }
+};
+
+window.deleteSquad = async (id) => {
+    if (confirm("Delete this squad forever?")) { await supabaseClient.from('groups').delete().eq('id', id); renderSquadLists(); }
+};
+
 window.addAsset = async () => {
     const cid = document.getElementById('coin-id').value.toLowerCase().trim();
     const amt = parseFloat(document.getElementById('coin-amount').value);
     await supabaseClient.from('assets').insert([{ user_id: MY_ID, coin_id: cid, amount: amt }]);
     showView('view-dashboard');
-};
-
-window.deleteCoin = async (id) => {
-    if (confirm("Delete coin?")) { await supabaseClient.from('assets').delete().eq('id', id); renderPortfolio(); }
-};
-
-window.deleteSquad = async (id) => {
-    if (confirm("Permanently delete this squad?")) { await supabaseClient.from('groups').delete().eq('id', id); renderSquadLists(); }
 };
 
 async function renderPortfolio() {
@@ -65,7 +60,6 @@ async function renderPortfolio() {
     document.getElementById('total-val').innerText = "$" + total.toLocaleString();
 }
 
-// SQUAD LOGIC
 window.createGroup = async () => {
     const name = document.getElementById('new-sq-name').value;
     const code = Math.random().toString(36).substring(2, 7).toUpperCase();
@@ -85,13 +79,10 @@ window.joinGroup = async () => {
 
 async function renderSquadLists() {
     const { data: created } = await supabaseClient.from('groups').select('*').eq('owner_id', MY_ID);
-    const { data: members } = await supabaseClient.from('group_members').select('group_id').eq('user_id', MY_ID);
-    let jd = []; if (members?.length > 0) jd = (await supabaseClient.from('groups').select('*').in('id', members.map(m => m.group_id))).data || [];
-    
-    document.getElementById('created-list').innerHTML = created?.map(s => 
-        `<div class="squad-link"><span onclick="loadLeaderboard('${s.id}')">${s.name}</span><button onclick="deleteSquad('${s.id}')" style="background:none; border:none; color:red">×</button></div>`).join('') || "None";
-    document.getElementById('joined-list').innerHTML = jd?.filter(j => j.owner_id !== MY_ID).map(j => 
-        `<div class="squad-link" onclick="loadLeaderboard('${j.id}')">${j.name} ➔</div>`).join('') || "None";
+    const { data: mRows } = await supabaseClient.from('group_members').select('group_id').eq('user_id', MY_ID);
+    let jd = []; if (mRows?.length > 0) jd = (await supabaseClient.from('groups').select('*').in('id', mRows.map(m => m.group_id))).data || [];
+    document.getElementById('created-list').innerHTML = created?.map(s => `<div class="squad-link"><span onclick="loadLeaderboard('${s.id}')">${s.name} ➔</span><button onclick="deleteSquad('${s.id}')" style="background:none;border:none;color:red">×</button></div>`).join('') || "None";
+    document.getElementById('joined-list').innerHTML = jd?.filter(j => j.owner_id !== MY_ID).map(j => `<div class="squad-link"><span onclick="loadLeaderboard('${j.id}')">${j.name} ➔</span><button onclick="exitSquad('${j.id}')" style="background:none;border:none;color:orange;font-size:10px">EXIT</button></div>`).join('') || "None";
 }
 
 async function loadLeaderboard(gid) {
@@ -115,7 +106,8 @@ async function loadLeaderboard(gid) {
         <strong class="${d.growth >= 0 ? 'up' : 'down'}">${d.growth >= 0 ? '↑' : '↓'} ${Math.abs(d.growth).toFixed(2)}%</strong></div>`).join('');
 }
 
-window.buyPro = async () => { const res = await fetch(`/api/pay-pro?userId=${MY_ID}`); const d = await res.json(); tg.openTelegramLink(d.url); };
 window.copyCode = () => { navigator.clipboard.writeText(document.getElementById('sq-code-display').innerText); alert("Copied!"); };
+window.shareSquad = () => tg.openTelegramLink(`https://t.me/share/url?url=https://t.me/CryptoSquadProBot?startapp=${document.getElementById('sq-code-display').innerText}`);
+window.buyPro = async () => { const res = await fetch(`/api/pay-pro?userId=${MY_ID}`); const d = await res.json(); tg.openTelegramLink(d.url); };
 
 document.addEventListener('DOMContentLoaded', init);
