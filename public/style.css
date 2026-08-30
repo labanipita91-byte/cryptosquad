@@ -5,12 +5,12 @@
 body { background: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; padding: 0; }
 .container { padding: 16px; max-width: 500px; margin: auto; padding-bottom: 50px; }
 
-/* Spacing Fix */
+/* FIX: Better spacing between buttons and the coin list */
 .actions { 
     display: grid; 
     grid-template-columns: 1fr 1fr; 
     gap: 12px; 
-    margin-bottom: 40px; /* Added more space below buttons */
+    margin-bottom: 40px; /* Increased space here */
 }
 
 .top-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
@@ -21,13 +21,9 @@ body { background: var(--bg); color: var(--text); font-family: sans-serif; margi
 
 .btn-p { background: var(--primary); color: #000; border: none; padding: 16px; border-radius: 12px; font-weight: bold; width: 100%; cursor: pointer; }
 .btn-s { background: var(--card); color: #fff; border: 1px solid #444; padding: 16px; border-radius: 12px; cursor: pointer; }
-
-/* Joseph's Yellow Back Button */
 .btn-back-y { background: none; border: none; color: var(--primary); font-size: 18px; margin-bottom: 20px; cursor: pointer; font-weight: bold; }
 
-/* List Spacing & Delete Button */
-.section-title { color: var(--hint); font-size: 12px; text-transform: uppercase; margin-bottom: 15px; font-weight: bold; }
-
+/* Asset List Items */
 .asset-item { 
     display: flex; 
     justify-content: space-between; 
@@ -38,6 +34,7 @@ body { background: var(--bg); color: var(--text); font-family: sans-serif; margi
     align-items: center; 
 }
 
+/* THE DELETE BUTTON (X) */
 .btn-del { 
     color: var(--down); 
     background: rgba(246, 70, 93, 0.1); 
@@ -46,19 +43,41 @@ body { background: var(--bg); color: var(--text); font-family: sans-serif; margi
     font-weight: bold;
     margin-left: 15px; 
     cursor: pointer; 
-    width: 30px;
-    height: 30px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
+/* Squad List Styling */
+.squad-link { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    background: var(--card); 
+    padding: 18px; 
+    border-radius: 15px; 
+    color: #fff; 
+    margin-bottom: 10px; 
+    border-right: 4px solid var(--primary); 
+    font-weight: bold; 
+}
+
+/* EXIT BUTTON FOR SQUADS */
+.btn-exit-small {
+    background: none;
+    border: 1px solid var(--down);
+    color: var(--down);
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 10px;
+    cursor: pointer;
+}
+
 .code-box { background: #000; padding: 12px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border: 1px dashed #444; }
 .btn-copy { background: var(--primary); border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; }
-.squad-link { display: flex; justify-content: space-between; background: var(--card); padding: 15px; border-radius: 12px; color: #fff; margin-bottom: 8px; border-right: 4px solid var(--primary); font-weight: bold; }
-
-.modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; display: flex; align-items: center; justify-content: center; }
-.modal-content { background: var(--card); padding: 30px; border-radius: 20px; width: 80%; text-align: center; }
-input { width: 100%; padding: 15px; background: #181a20; border: 1px solid #333; color: #fff; border-radius: 10px; margin-bottom: 10px; }
+input { width: 100%; padding: 15px; background: #181a20; border: 1px solid #333; color: #fff; border-radius: 10px; margin-bottom: 10px; box-sizing: border-box; }
+.section-title { color: var(--hint); font-size: 11px; text-transform: uppercase; margin-bottom: 15px; font-weight: bold; }
 .up { color: var(--up); } .down { color: var(--down); }
