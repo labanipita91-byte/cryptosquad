@@ -3,81 +3,64 @@
     --up: #0ecb81; --down: #f6465d; --hint: #848e9c;
 }
 body { background: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; padding: 0; }
-.container { padding: 16px; max-width: 500px; margin: auto; padding-bottom: 50px; }
+.container { padding: 16px; max-width: 500px; margin: auto; padding-bottom: 60px; }
 
-/* FIX: Better spacing between buttons and the coin list */
+/* Dashboard Spacing */
+.balance-card { background: var(--card); padding: 30px; border-radius: 20px; text-align: center; border-bottom: 4px solid var(--primary); margin-bottom: 20px; }
+.balance-card h1 { font-size: 42px; margin: 5px 0; }
+
 .actions { 
     display: grid; 
     grid-template-columns: 1fr 1fr; 
     gap: 12px; 
-    margin-bottom: 40px; /* Increased space here */
+    margin-bottom: 45px; /* BIG GAP HERE */
 }
 
-.top-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-.badge { background: #333; color: var(--primary); padding: 5px 10px; border-radius: 8px; font-size: 11px; }
+/* Section Headers */
+.section-title { color: var(--hint); font-size: 12px; text-transform: uppercase; margin-bottom: 15px; font-weight: bold; }
 
-.balance-card { background: var(--card); padding: 30px; border-radius: 20px; text-align: center; border-bottom: 4px solid var(--primary); margin-bottom: 20px; }
-.balance-card h1 { font-size: 42px; margin: 5px 0; }
-
-.btn-p { background: var(--primary); color: #000; border: none; padding: 16px; border-radius: 12px; font-weight: bold; width: 100%; cursor: pointer; }
-.btn-s { background: var(--card); color: #fff; border: 1px solid #444; padding: 16px; border-radius: 12px; cursor: pointer; }
-.btn-back-y { background: none; border: none; color: var(--primary); font-size: 18px; margin-bottom: 20px; cursor: pointer; font-weight: bold; }
-
-/* Asset List Items */
-.asset-item { 
+/* Asset & Squad Items */
+.asset-item, .squad-link { 
     display: flex; 
     justify-content: space-between; 
     padding: 16px; 
     background: var(--card); 
     border-radius: 15px; 
-    margin-bottom: 10px; 
+    margin-bottom: 12px; 
     align-items: center; 
 }
 
-/* THE DELETE BUTTON (X) */
-.btn-del { 
+/* BUTTONS */
+.btn-p { background: var(--primary); color: #000; border: none; padding: 16px; border-radius: 12px; font-weight: bold; width: 100%; cursor: pointer; }
+.btn-s { background: var(--card); color: #fff; border: 1px solid #444; padding: 16px; border-radius: 12px; cursor: pointer; }
+.btn-back-y { background: none; border: none; color: var(--primary); font-size: 18px; margin-bottom: 20px; font-weight: bold; cursor: pointer; }
+
+/* THE DELETE/EXIT BUTTONS */
+.btn-del-circle { 
     color: var(--down); 
-    background: rgba(246, 70, 93, 0.1); 
+    background: rgba(246, 70, 93, 0.15); 
     border: none; 
     font-size: 18px; 
     font-weight: bold;
-    margin-left: 15px; 
-    cursor: pointer; 
-    width: 32px;
-    height: 32px;
+    width: 35px;
+    height: 35px;
     border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    cursor: pointer;
+    margin-left: 10px;
 }
 
-/* Squad List Styling */
-.squad-link { 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center;
-    background: var(--card); 
-    padding: 18px; 
-    border-radius: 15px; 
-    color: #fff; 
-    margin-bottom: 10px; 
-    border-right: 4px solid var(--primary); 
-    font-weight: bold; 
-}
-
-/* EXIT BUTTON FOR SQUADS */
-.btn-exit-small {
+.btn-exit-text {
     background: none;
-    border: 1px solid var(--down);
-    color: var(--down);
-    padding: 4px 8px;
-    border-radius: 6px;
-    font-size: 10px;
+    border: 1px solid var(--hint);
+    color: var(--hint);
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-size: 11px;
     cursor: pointer;
 }
 
-.code-box { background: #000; padding: 12px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border: 1px dashed #444; }
-.btn-copy { background: var(--primary); border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; }
+/* Modals */
+.modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; display: flex; align-items: center; justify-content: center; }
+.modal-content { background: var(--card); padding: 30px; border-radius: 20px; width: 85%; text-align: center; }
 input { width: 100%; padding: 15px; background: #181a20; border: 1px solid #333; color: #fff; border-radius: 10px; margin-bottom: 10px; box-sizing: border-box; }
-.section-title { color: var(--hint); font-size: 11px; text-transform: uppercase; margin-bottom: 15px; font-weight: bold; }
 .up { color: var(--up); } .down { color: var(--down); }
