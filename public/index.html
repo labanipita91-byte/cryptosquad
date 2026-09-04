@@ -1,48 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CryptoSquad Pro</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>CryptoSquad Pro</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-    <div id="pay-wall" class="modal" style="display:none;">
-        <div class="modal-content"><h1>🛑</h1><h2>Trial Ended</h2><button class="btn-p" onclick="buyPro()">Upgrade (299 Stars)</button></div>
+  <!-- Subscription Required / Paywall (hard-gate) -->
+  <div id="pay-wall" class="modal" style="display:none;">
+    <div class="modal-content pay-content">
+      <h1>🔒 Subscription Required</h1>
+      <p id="pay-msg">Your subscription has expired. Choose a tier to continue using CryptoSquad Pro.</p>
+
+      <div class="tiers">
+        <div class="tier" data-tier="bronze">
+          <div class="tier-title">BRONZE</div>
+          <div class="tier-desc">50 Stars / week<br>3 coins • 1 squad • 3 alerts</div>
+          <button class="btn-p tier-buy" data-tier="bronze">Buy Bronze</button>
+        </div>
+        <div class="tier" data-tier="silver">
+          <div class="tier-title">SILVER</div>
+          <div class="tier-desc">100 Stars / week<br>10 coins • unlimited joined squads • 3 created squads • 7 alerts</div>
+          <button class="btn-p tier-buy" data-tier="silver">Buy Silver</button>
+        </div>
+        <div class="tier" data-tier="gold">
+          <div class="tier-title">GOLD VIP <span class="gold-badge">VIP</span></div>
+          <div class="tier-desc">200 Stars / week<br>Unlimited everything • Gold VIP badge</div>
+          <button class="btn-p tier-buy" data-tier="gold">Buy Gold VIP</button>
+        </div>
+      </div>
+
+      <button class="btn-back-y pay-close">← Back</button>
     </div>
-    <div class="container">
-        <header class="top-nav">
-            <h2 id="user-display">...</h2>
-            <div id="trial-badge" class="badge">14d Trial</div>
-        </header>
-        <main id="app">
-            <section id="view-dashboard">
-                <div class="balance-card"><small>Portfolio</small><h1 id="total-val">$0.00</h1><div id="total-change">+0.00%</div></div>
-                <div class="actions"><button class="btn-p" onclick="showView('view-add')">+ Add Coin</button><button class="btn-s" onclick="showView('view-groups')">Squads</button></div>
-                <div id="asset-list"></div>
-            </section>
-            <section id="view-add" style="display:none;">
-                <button class="btn-back-y" onclick="showView('view-dashboard')">← Back</button>
-                <div class="form-card"><input type="text" id="coin-id" placeholder="bitcoin..."><input type="number" id="coin-amount" placeholder="0.5"><button class="btn-p" onclick="addAsset()">Save Asset</button></div>
-            </section>
-            <section id="view-groups" style="display:none;">
-                <button class="btn-back-y" onclick="showView('view-dashboard')">← Back</button>
-                <div class="section-title">Created By Me</div><div id="created-list"></div>
-                <div class="section-title" style="margin-top:15px">Joined Squads</div><div id="joined-list"></div>
-                <div class="form-card" style="margin-top:20px"><input type="text" id="new-sq-name" placeholder="Name"><button class="btn-p" onclick="createGroup()">Create</button>
-                <input type="text" id="join-code" placeholder="Code" style="margin-top:10px"><button class="btn-s" style="width:100%" onclick="joinGroup()">Join</button></div>
-            </section>
-            <section id="view-active-squad" style="display:none;">
-                <button class="btn-back-y" onclick="showView('view-groups')">← Back</button>
-                <h2 id="sq-name-display"></h2>
-                <div class="code-box"><span id="sq-code-display"></span><button onclick="copyCode()" class="btn-copy">COPY</button></div>
-                <button class="btn-p" onclick="shareSquad()">📢 Invite Friends</button>
-                <div id="leaderboard-list" style="margin-top:20px"></div>
-            </section>
-        </main>
-    </div>
-    <script src="app.js"></script>
+  </div>
+
+  <div class="container">
+    <header class="top-nav">
+      <h2 id="user-display">...</h2>
+      <div id="trial-badge" class="badge">—</div>
+    </header>
+
+    <main id="app">
+      <section id="view-dashboard">
+        <div class="balance-card"><small>Portfolio</small><h1 id="total-val">$0.00</h1><div id="total-change">+0.00%</div></div>
+
+        <div class="actions">
+          <button class="btn-p" id="btn-add" onclick="showView('view-add')">+ Add Coin</button>
+          <button class="btn-s" id="btn-groups" onclick="showView('view-groups')">Squads</button>
+        </div>
+
+        <div style="height:40px"></div> <!-- strict 40px vertical spacing -->
+
+        <div id="asset-list"></div>
+      </section>
+
+      <section id="view-add" style="display:none;">
+        <button class="btn-back-y" onclick="showView('view-dashboard')">← Back</button>
+        <div class="form-card">
+          <input type="text" id="coin-id" placeholder="bitcoin...">
+          <input type="number" id="coin-amount" placeholder="0.5">
+          <button class="btn-p" onclick="addAsset()">Save</button>
+        </div>
+      </section>
+
+      <section id="view-groups" style="display:none;">
+        <button class="btn-back-y" onclick="showView('view-dashboard')">← Back</button>
+
+        <div class="section-title">Squads I Created</div>
+        <div id="created-list"></div>
+
+        <div style="height:20px"></div>
+
+        <div class="section-title">Squads I Joined</div>
+        <div id="joined-list"></div>
+
+        <div class="form-card" style="margin-top:20px">
+          <input type="text" id="new-sq-name" placeholder="Name">
+          <button class="btn-p" onclick="createGroup()">Create</button>
+          <input type="text" id="join-code" placeholder="Code" style="margin-top:10px">
+          <button class="btn-s" style="width:100%" onclick="joinGroup()">Join</button>
+        </div>
+      </section>
+
+      <section id="view-active-squad" style="display:none;">
+        <button class="btn-back-y" onclick="showView('view-groups')">← Back</button>
+        <div class="squad-header">
+          <h2 id="sq-name-display"></h2>
+          <div id="sq-owner-count"></div>
+        </div>
+
+        <div class="code-box"><span id="sq-code-display"></span><button onclick="copyCode()" class="btn-copy">COPY</button></div>
+        <button class="btn-p" onclick="shareSquad()">📢 Invite Friends</button>
+        <button class="btn-exit" onclick="exitSquadConfirm()">Exit Squad</button>
+
+        <div id="leaderboard-list" style="margin-top:20px"></div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
 </body>
-    </html>
+</html>
