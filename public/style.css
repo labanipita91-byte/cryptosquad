@@ -1,66 +1,150 @@
+/* name=public/style.css */
+/* Binance-style theme for CryptoSquad Pro
+   Theme: Background #0b0e11, Yellow #fcd535, Cards #1e2329
+*/
+
 :root {
-    --bg: #0b0e11; --card: #1e2329; --primary: #fcd535; --text: #eaecef;
-    --up: #0ecb81; --down: #f6465d; --hint: #848e9c;
-}
-body { background: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; padding: 0; }
-.container { padding: 16px; max-width: 500px; margin: auto; padding-bottom: 60px; }
-
-/* Dashboard Spacing */
-.balance-card { background: var(--card); padding: 30px; border-radius: 20px; text-align: center; border-bottom: 4px solid var(--primary); margin-bottom: 20px; }
-.balance-card h1 { font-size: 42px; margin: 5px 0; }
-
-.actions { 
-    display: grid; 
-    grid-template-columns: 1fr 1fr; 
-    gap: 12px; 
-    margin-bottom: 45px; /* BIG GAP HERE */
+  --bg: #0b0e11;
+  --card: #1e2329;
+  --primary: #fcd535;
+  --text: #eaecef;
+  --up: #0ecb81;
+  --down: #f6465d;
+  --hint: #848e9c;
+  --gap-vertical: 40px;
 }
 
-/* Section Headers */
-.section-title { color: var(--hint); font-size: 12px; text-transform: uppercase; margin-bottom: 15px; font-weight: bold; }
+* { box-sizing: border-box; }
+html,body { height: 100%; margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; }
+.container { padding: 20px; max-width: 900px; margin: 0 auto; }
 
-/* Asset & Squad Items */
-.asset-item, .squad-link { 
-    display: flex; 
-    justify-content: space-between; 
-    padding: 16px; 
-    background: var(--card); 
-    border-radius: 15px; 
-    margin-bottom: 12px; 
-    align-items: center; 
+/* Top nav */
+.top-nav { display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px; }
+.top-nav h2 { margin:0; font-size:18px; font-weight:600; color:var(--text); }
+.badge { background: rgba(255,255,255,0.03); color: var(--hint); padding:6px 10px; border-radius:10px; font-size:12px; }
+
+/* Cards */
+.balance-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border: 1px solid rgba(255,255,255,0.03);
+  padding: 26px;
+  border-radius: 16px;
+  text-align: left;
+  color: var(--text);
+  margin-bottom: 20px;
+}
+.balance-card small { color: var(--hint); display:block; margin-bottom: 6px; text-transform:uppercase; font-size:12px; }
+.balance-card h1 { font-size:34px; margin:0 0 6px 0; }
+#total-change.up { color: var(--up); }
+#total-change.down { color: var(--down); }
+
+/* Actions with strict 40px gap */
+.actions { display:flex; gap: 12px; margin-bottom: var(--gap-vertical); }
+.actions .btn-p, .actions .btn-s { flex:1; }
+
+/* layout spacer enforcement (index.html uses a 40px spacer) */
+.code-box { display:flex; gap:10px; align-items:center; background: rgba(255,255,255,0.02); padding: 12px; border-radius: 12px; margin: 12px 0; }
+
+/* Section headers */
+.section-title { color: var(--hint); font-size: 12px; text-transform: uppercase; margin-bottom: 12px; font-weight:700; }
+
+/* Items */
+.asset-item, .squad-link {
+  display:flex; justify-content:space-between; align-items:center;
+  padding: 14px; background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));
+  border: 1px solid rgba(255,255,255,0.02);
+  border-radius: 12px; margin-bottom: 12px;
 }
 
-/* BUTTONS */
-.btn-p { background: var(--primary); color: #000; border: none; padding: 16px; border-radius: 12px; font-weight: bold; width: 100%; cursor: pointer; }
-.btn-s { background: var(--card); color: #fff; border: 1px solid #444; padding: 16px; border-radius: 12px; cursor: pointer; }
-.btn-back-y { background: none; border: none; color: var(--primary); font-size: 18px; margin-bottom: 20px; font-weight: bold; cursor: pointer; }
-
-/* THE DELETE/EXIT BUTTONS */
-.btn-del-circle { 
-    color: var(--down); 
-    background: rgba(246, 70, 93, 0.15); 
-    border: none; 
-    font-size: 18px; 
-    font-weight: bold;
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-    cursor: pointer;
-    margin-left: 10px;
+/* Buttons */
+.btn-p {
+  background: var(--primary);
+  color: #111;
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.btn-s {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid rgba(255,255,255,0.04);
+  padding: 12px;
+  border-radius: 10px;
+  cursor: pointer;
 }
 
+/* Back buttons MUST be Bold and Yellow */
+.btn-back-y {
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-size: 16px;
+  margin-bottom: 20px;
+  font-weight: 800; /* Bold */
+  cursor: pointer;
+}
+
+/* Delete / exit buttons */
+.btn-del-circle {
+  color: var(--down);
+  background: rgba(246,70,93,0.12);
+  border: none;
+  font-size: 18px;
+  font-weight: 700;
+  width: 36px; height:36px;
+  border-radius: 50%;
+  cursor: pointer;
+}
 .btn-exit-text {
-    background: none;
-    border: 1px solid var(--hint);
-    color: var(--hint);
-    padding: 5px 10px;
-    border-radius: 8px;
-    font-size: 11px;
-    cursor: pointer;
+  background: none;
+  border: 1px solid var(--hint);
+  color: var(--hint);
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.btn-exit {
+  margin-top: 12px;
+  background: transparent;
+  color: var(--hint);
+  border: 1px solid rgba(255,255,255,0.03);
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer;
 }
 
-/* Modals */
-.modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; display: flex; align-items: center; justify-content: center; }
-.modal-content { background: var(--card); padding: 30px; border-radius: 20px; width: 85%; text-align: center; }
-input { width: 100%; padding: 15px; background: #181a20; border: 1px solid #333; color: #fff; border-radius: 10px; margin-bottom: 10px; box-sizing: border-box; }
-.up { color: var(--up); } .down { color: var(--down); }
+/* Copy button */
+.btn-copy {
+  background: var(--card);
+  color: var(--primary);
+  border: 1px solid rgba(255,255,255,0.03);
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+/* Modal paywall */
+.modal { position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.8); display:flex; align-items:center; justify-content:center; z-index:1000; }
+.modal-content { background: var(--card); padding: 28px; border-radius:16px; width: 92%; max-width:920px; color:var(--text); }
+.pay-content h1 { margin-top:0; color:var(--text); font-size:26px; }
+.tiers { display:flex; gap:12px; margin: 18px 0; flex-wrap:wrap; }
+.tier { background: rgba(255,255,255,0.02); border-radius:12px; padding: 12px; flex:1; min-width:220px; border:1px solid rgba(255,255,255,0.02); }
+.tier-title { font-weight:800; color:var(--text); margin-bottom:6px; }
+.gold-badge { background: linear-gradient(90deg,#ffd55a,#ffb347); padding:2px 8px; border-radius:8px; font-size:12px; margin-left:8px; color:#111; font-weight:700; }
+
+/* Inputs & forms */
+input[type="text"], input[type="number"] { width:100%; padding:12px; border-radius:10px; background:#0f1417; border:1px solid rgba(255,255,255,0.03); color:var(--text); margin-bottom:10px; }
+
+/* up/down colors */
+.up { color: var(--up); }
+.down { color: var(--down); }
+
+/* small screens adjustments */
+@media (max-width: 640px) {
+  .actions { flex-direction: column; }
+  .tiers { flex-direction: column; }
+          }
