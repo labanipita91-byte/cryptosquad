@@ -147,4 +147,4 @@ input[type="text"], input[type="number"] { width:100%; padding:12px; border-radi
 @media (max-width: 640px) {
   .actions { flex-direction: column; }
   .tiers { flex-direction: column; }
-          }
+   }
